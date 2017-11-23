@@ -82,20 +82,10 @@ let dataAtIndex  xs_data xs_index =
  f xs_data xs_index List.empty
 
 /// Maps a scalar to a vector using a mapper function.
-let scalarToVecOp mapper x ys = List.map (mapper x) ys
+let scalarToVecOp mapper ys x = List.map (mapper x) ys
 
-/// Maps the elements the first list (xs) to second list (ys) using the mapper function.
-/// first, it gets the first element of first list (xs) and maps to second list (ys)
-/// using the mapper function. i.e. (List.map (mapper x) ys).
-/// Finally it returns the accumulated mapped list.
-/// mapToSecondList (+) ["1"; "2"; "3"] ["2"; "3", "4"] =
-/// [ ["12"; "13"; "14"]; ["22"; "23"; "24"]; ["32"; "33"; "34"] ].
-let mapToSecondList mapper xs ys =
- let rec f mapper xs ys acc =
-  match xs with
-  | [] -> List.rev acc
-  | hd::tl -> f mapper tl ys <| (List.map (mapper hd) ys)::acc
- f mapper xs ys List.empty
+/// Maps the each elements from first list (xs) to second list (ys) using the mapper function.
+let mapToSecondList mapper xs ys = List.map (scalarToVecOp mapper ys) xs
 
 /// Scalar Vector Multiplication.
 let smul c xs = List.map ((*) c) xs
