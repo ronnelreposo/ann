@@ -4,8 +4,8 @@
  Implementation of Artificial Neural Network
  
   Features:
-   - kfold cross validation
-   - stochastic gradient descent
+   - validation: kfold cross validation
+   - optimization: gradient descent
 
   Arhitecture:
    - n Inputs
@@ -19,7 +19,6 @@
 *)
 
 open System.IO;
-open System.Text.RegularExpressions;
 
 /// Matrix Transpose.
 let transpose xss =
@@ -257,7 +256,7 @@ let logToDataFile path filename =
 (* ---------------------------------------------------------------- *)
 
 /// Train Network.
-let rec train epoch kfold netAcc (data_xs:List<List<float>>) =
+let rec train epoch kfold netAcc (data_xs:float list list) =
  match epoch with
  | 0 -> netAcc
  | _ ->
@@ -267,25 +266,15 @@ let rec train epoch kfold netAcc (data_xs:List<List<float>>) =
   let trainedRms = networkDistance trained
   let validated = List.fold validate netAcc testSet
   let validatedRms = networkDistance validated
-  let logToScriptsDataFile = logToDataFile @"D:\Projects\AI\cardiotocography\script\"
-  if epoch % 100 = 0 then
-   printfn "%f %f" trainedRms validatedRms
-   logToScriptsDataFile "errors.dat" <| (string trainedRms) + "," + (string validatedRms) + "\n"
-   logToScriptsDataFile "weightsAndBiases.dat" <|
-    (netAcc.FirstHiddenLayer.Weights |> matrixToString) + "," +
-    (netAcc.FirstHiddenLayer.Bias |> vectorToString) + "," +
-    (netAcc.SecondHiddenLayer.Weights |> matrixToString) + "," +
-    (netAcc.SecondHiddenLayer.Bias |> vectorToString) + "," +
-    (netAcc.OutputLayer.Weights |> matrixToString) + "," +
-    (netAcc.OutputLayer.Bias |> vectorToString) + "\n"
+  printfn "%f, %f" trainedRms validatedRms
   train ((-) epoch 1) kfold trained data_xs
 
-let inputSize = 7;
-let hiddenSize = 10;
-let outputSize = 13;
+let inputSize = 2;
+let hiddenSize = 3;
+let outputSize = 4;
 
 let network = {
- LearningRate = 0.001
+ LearningRate = 0.01
  Momentum = 0.5
  Inputs = List.replicate inputSize 0.0
  FirstHiddenLayer = {
@@ -318,17 +307,15 @@ let network = {
  TargetOutputs = List.replicate outputSize 0.0
 }
 
-let dataToFloatList separator data = Regex.Split(data, separator) |> Array.map float |> Array.toList
-let csvStrToFloatList = dataToFloatList ","
-let data filename = (* replace with your current directory. *)
- File.ReadAllLines(@"D:\Projects\AI\cardiotocography\data and error\"+filename)
- |> Array.toList
- |> List.map csvStrToFloatList
-
-let alldata = data "data.csv"
+let alldata =
+ [
+  (*inputs*)   (* expected outputs. *)
+  [ 0.1; 0.2;  0.3; 0.4; 0.5; 0.6 ]
+  [ 0.2; 0.3;  0.4; 0.5; 0.6; 0.7 ]
+ ]
 
 let kfold = 1
-let epoch = 1
+let epoch = 500
 
 printfn "Training..."
 let trained = train epoch kfold network alldata
