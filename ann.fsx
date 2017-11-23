@@ -25,7 +25,7 @@ open System.Text.RegularExpressions;
 let transpose xss =
  let rec f xss acc =
   match xss with
-  | [] -> failwith "xss must not contain empty vectors."
+  | [] -> List.empty
   | hd::_ ->
    match hd with
    | [] -> List.rev acc
