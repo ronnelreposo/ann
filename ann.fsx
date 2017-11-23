@@ -41,13 +41,19 @@ let dot xs ys =
 /// Square of a number (x).
 let square x = x * x
 
+/// Square Distance between two scalars.
+let scalarDistSquare x y a =
+ (square (x - y)) + a
+
 /// Euclidean Distance.
+/// *used to calculate error for low dimension.
 let distance xs ys =
-  (List.map2 (-) xs ys)
-  |> List.map square
-  |> List.average
-  |> sqrt
-  |> (*) 0.5
+ sqrt <| List.foldBack2 scalarDistSquare xs ys 0.0
+
+/// Root Mean Square.
+/// *used to calculate error for high dimension.
+let rms xs ys =
+ sqrt ((List.foldBack2 scalarDistSquare xs ys 0.0) / (float xs.Length))
 
 ///Shuffle List (Fisher Yates Alogrithm).
 let shuffle xs =
@@ -251,7 +257,7 @@ let trainOnce net data =
  let inputs, targets = splitToIO net data
  { net with Inputs = inputs; TargetOutputs = targets } |> feedForward |> backPropagate
 
-let networkDistance network = distance network.TargetOutputs network.OutputLayer.NetOutputs
+let networkDistance network = rms network.TargetOutputs network.OutputLayer.NetOutputs
 
 let log path data = File.AppendAllText(path, data)
 
