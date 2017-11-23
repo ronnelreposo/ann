@@ -1,4 +1,23 @@
 ﻿
+(*
+ 
+ Implementation of Artificial Neural Network
+ 
+  Features:
+   - kfold cross validation
+   - stochastic gradient descent
+
+  Arhitecture:
+   - n Inputs
+   - n HiddenNeurons
+   - n Outputs
+   - n x 2 Hidden Layers
+
+   * This network only uses two hidden layer,
+     to avoid diminishing gradient problem.
+
+*)
+
 open System.IO;
 open System.Text.RegularExpressions;
 
@@ -310,8 +329,8 @@ let data filename = (* replace with your current directory. *)
 
 let alldata = data "data.csv"
 
-let kfold = 10
-let epoch = 5000
+let kfold = 1
+let epoch = 1
 
 printfn "Training..."
 let trained = train epoch kfold network alldata
