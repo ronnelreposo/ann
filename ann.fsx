@@ -34,7 +34,9 @@ let transpose xss =
  f xss List.empty
 
 /// The Dot Product of xs and ys.
-let dot xs ys = List.map2 (*) xs ys |> List.sum
+let dot xs ys =
+ let f x y a = (x * y) + a
+ List.foldBack2 f xs ys 0.0
 
 /// Square of a number (x).
 let square x = x * x
