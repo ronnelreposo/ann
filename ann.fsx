@@ -124,24 +124,24 @@ let deltas learningRate gradients netOutputs = List.map <| smul learningRate <| 
 
 /// Represents a Network Layer.
 type Layer = {
-  Inputs: List<float>
-  Weights: List<List<float>>
-  Bias: List<float>
-  Gradients: List<float>
-  PrevDeltas: List<List<float>>
-  BiasPrevDeltas: List<float>
-  NetOutputs: List<float>
+  Inputs: float list
+  Weights: float list list
+  Bias: float list
+  Gradients: float list
+  PrevDeltas: float list list
+  BiasPrevDeltas: float list
+  NetOutputs: float list
   }
 
 /// Represents a Feed Forward Network.
 type Network = {
  LearningRate: float
  Momentum: float
- Inputs: List<float>
+ Inputs: float list
  FirstHiddenLayer : Layer
  SecondHiddenLayer : Layer
  OutputLayer : Layer
- TargetOutputs: List<float>
+ TargetOutputs: float list
  }
 
 /// Feed Forward Network.
